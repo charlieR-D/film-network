@@ -5,6 +5,7 @@ var bodyParser= require ('body-parser')
 const mysql = require('mysql');
 var session = require ('express-session');
 const bcrypt = require('bcrypt');
+const expressSanitizer = require('express-sanitizer');
 
 
 // Create the express application object
@@ -25,6 +26,7 @@ app.use(session({
     }
 }));
 
+app.use(expressSanitizer());
 
 // Define the database connection
 const db = mysql.createConnection ({

@@ -40,12 +40,20 @@ module.exports = function(app, webData) {
          });        
     });
 
-    
+
     app.get('/register', function (req,res) {
         res.render('register.ejs', webData);                                                                     
     });                           
 
     app.post('/registered', function (req,res) {
+
+         // Sanitize inputs
+         req.body.first = req.sanitize(req.body.first);
+         req.body.last = req.sanitize(req.body.last);
+         req.body.username = req.sanitize(req.body.username)
+         req.body.password = req.sanitize(req.body.password)
+         req.body.email = req.sanitize(req.body.email)
+ 
         const plainPassword = req.body.password;
 
 

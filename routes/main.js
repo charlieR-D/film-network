@@ -13,6 +13,7 @@ module.exports = function(app, webData) {
 
     const request = require('request');
 
+    var runId;
 
 
 
@@ -242,7 +243,7 @@ module.exports = function(app, webData) {
                 };
             
                 var actorApiUrl = 'https://api.apify.com/v2/acts/rado.ch~rotten-tomatoes-scraper/runs?token=apify_api_ehQMpaOXevsi0gm1AFaLAnTlAKaf6734a8Li'; // Replace YOUR_API_TOKEN with your actual Apify token
-            
+
                 // Send a POST request to the Apify API to start the actor
                 request.post({
                     url: actorApiUrl,
@@ -253,32 +254,53 @@ module.exports = function(app, webData) {
                         res.status(500).send('Error starting the scraping process.');
                         return;
                     }
-            
-                    // var runId = body.data.id; // Get the ID of the actor run
-                    // console.log(runId)
 
-                    // var getDatasetUrl = `https://api.apify.com/v2/datasets/${runId}/items?clean=true&format=json`; // Replace YOUR_API_TOKEN with your actual Apify token
+                    // var runId = body.data.defaultDatasetId; // Get the ID of the actor run
+                    console.log(runId)
+
+                    function pollForDataset() {
+
+
+                    var runId = 'wzrMggBLbQAZ7zCKg';
+
+                    var getDatasetUrl = `https://api.apify.com/v2/datasets/${runId}/items?token=apify_api_ehQMpaOXevsi0gm1AFaLAnTlAKaf6734a8Li`; 
             
-                    var getDatasetUrl = 'https://api.apify.com/v2/datasets/C64dMc7bdygaOzG5i/items?clean=true&format=json'
+        
 
                     // Poll the Apify dataset for results (this may need to be delayed or repeated based on actor execution time)
+                   
                     request(getDatasetUrl, function(err, response, body) {
                         if (err) {
                             console.error('Error getting dataset:', err);
                             res.status(500).send('Error retrieving the data.');
-                            return;
+                            return setTimeout(pollForDataset, 10000);
+                            // return;
                         }
             
                         var results = JSON.parse(body);
+
+                        if(results && results.length > 0){
+
                         console.log('Results from dataset', results);
-                        // You can now render these results or process them as required
                         
 
                         let data = Object.assign({}, webData, { scrapedData: results });
 
                         res.render('ratings.ejs', data);
-                    });
+                        }
+
+                    else{
+                        console.log('Waiting for dataset...');
+                        return setTimeout(pollForDataset, 10000);
+                    }
+
+            });
+        }
+        pollForDataset();
+
+
                 });
+
             });
             
 

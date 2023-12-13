@@ -6,8 +6,13 @@ module.exports = function(app, webData) {
         } else { next (); }
     }
 
+    const ApifyClient = require('apify-client');
+
     const saltRounds = 10;
     const bcrypt = require('bcrypt');
+
+    const request = require('request');
+
 
 
 
@@ -212,7 +217,83 @@ module.exports = function(app, webData) {
                 res.send('you are now logged out. <a href='+'./'+'>Home</a>');
                 })
             })
-        
+
+
+
+
+         app.get('/ratings',function(req,res){
+        res.render('ratings.ejs', webData)
+    });
+
+
+
+            app.get('/scrapert', function(req, res) {
+            
+                // Prepare the input for the Apify Actor
+                var input = {
+                    "startUrls": [
+                        {
+                            "url": "https://www.rottentomatoes.com/tv/the_office"
+                        }
+                    ],
+                    "proxyConfig": {
+                        "useApifyProxy": true
+                    }
+                };
+            
+                var actorApiUrl = 'https://api.apify.com/v2/acts/rado.ch~rotten-tomatoes-scraper/runs?token=apify_api_ehQMpaOXevsi0gm1AFaLAnTlAKaf6734a8Li'; // Replace YOUR_API_TOKEN with your actual Apify token
+            
+                // Send a POST request to the Apify API to start the actor
+                request.post({
+                    url: actorApiUrl,
+                    json: input
+                }, function(err, response, body) {
+                    if (err) {
+                        console.error('Error starting Apify actor:', err);
+                        res.status(500).send('Error starting the scraping process.');
+                        return;
+                    }
+            
+                    // var runId = body.data.id; // Get the ID of the actor run
+                    // console.log(runId)
+
+                    // var getDatasetUrl = `https://api.apify.com/v2/datasets/${runId}/items?clean=true&format=json`; // Replace YOUR_API_TOKEN with your actual Apify token
+            
+                    var getDatasetUrl = 'https://api.apify.com/v2/datasets/C64dMc7bdygaOzG5i/items?clean=true&format=json'
+
+                    // Poll the Apify dataset for results (this may need to be delayed or repeated based on actor execution time)
+                    request(getDatasetUrl, function(err, response, body) {
+                        if (err) {
+                            console.error('Error getting dataset:', err);
+                            res.status(500).send('Error retrieving the data.');
+                            return;
+                        }
+            
+                        var results = JSON.parse(body);
+                        console.log('Results from dataset', results);
+                        // You can now render these results or process them as required
+                        
+
+                        let data = Object.assign({}, webData, { scrapedData: results });
+
+                        res.render('ratings.ejs', data);
+                    });
+                });
+            });
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
 

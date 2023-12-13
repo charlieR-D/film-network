@@ -1,0 +1,86 @@
+/* body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .main-content {
+    padding: 20px 15%; 
+    margin: 0 auto; 
+  } 
+  
+  .container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+  }
+  
+  .movie {
+    border: 1px solid #ddd;
+    padding: 5px;
+    text-align: center;
+  }
+  
+  .movie-image {
+    width: 100%;
+    height: 100px;
+    background-color: #f0f0f0;
+  }
+  
+  .movie-title,
+  .movie-rating {
+    margin-top: 5px;
+    font-family: Arial, sans-serif;
+    font-size: 0.7em;
+  }
+  
+    .container {
+      grid-template-columns: repeat(3, 1fr);
+    } 
+   */
+   body {
+    margin: 10px;
+    padding: 10px;
+  }
+  
+  .main-content {
+    padding: 20px; /* Removed the percentage-based padding for consistent spacing */
+    margin: 0 auto;
+    max-width: 1200px; /* Set a max-width for large screens */
+  }
+  
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center; /* Center the items in the container */
+  }
+  
+  .movie {
+    border: 1px solid #ddd;
+    padding: 5px;
+    text-align: center;
+    flex: 1 1 160px; /* Flex-grow, flex-shrink, flex-basis - makes boxes responsive */
+    max-width: calc(100%/6 - 10px); /* Adjusts the width for 6 items per row taking into account the gap */
+  }
+  
+  .movie-image {
+    width: 100%;
+    height: 100px;
+    background-color: #f0f0f0;
+  }
+  
+  .movie-title,
+  .movie-rating {
+    margin-top: 5px;
+    font-family: Arial, sans-serif;
+    font-size: 0.7em;
+  }
+
+
+  
+  @media screen and (max-width: 768px) {
+    .movie {
+      max-width: calc(100%/3 - 10px); /* Adjusts the width for 3 items per row on smaller screens */
+    }
+  }
+  

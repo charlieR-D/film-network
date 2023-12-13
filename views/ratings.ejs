@@ -2,11 +2,19 @@
 <html>
   <head>
     <title>Film Ratings -  <%=webName%></title>
-    <link rel="stylesheet"  type="text/css" href="/main.css" />
+    <link rel="stylesheet"  type="text/css" href="/test.css" />
   </head>
   <body>
     <h1>Film Ratings -  <%=webName%></h1>
-    <p> THE RATINGS
-    </p>
+
+    <div class="container">
+      <% movies.forEach(function(movie) { %>
+          <div class="movie">
+              <div class="movie-image"></div>
+              <div class="movie-title"><%= movie.title %></div>
+              <div class="movie-rating"> Rotten Tomato Rating: <%= movie.tomatometer %></div>
+          </div>
+      <% }) %>
+  </div>
   </body>
 </html>

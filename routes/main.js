@@ -222,13 +222,7 @@ module.exports = function(app, webData) {
 
 
 
-         app.get('/ratings',function(req,res){
-        res.render('ratings.ejs', webData)
-    });
-
-
-
-            app.get('/scrapert', function(req, res) {
+            app.get('/ratings', function(req, res) {
             
                 // Prepare the input for the Apify Actor
                 var input = {
@@ -265,7 +259,8 @@ module.exports = function(app, webData) {
                     // var runId = 'wzrMggBLbQAZ7zCKg';
 
                     //for big API
-                    var runId = 'QaPn6ZdQ20oPxaQ6y';
+                    // var runId = 'QaPn6ZdQ20oPxaQ6y';
+                    var runId = 'e72DEbjHgaHGrfTBJ';
 
                     var getDatasetUrl = `https://api.apify.com/v2/datasets/${runId}/items?token=apify_api_ehQMpaOXevsi0gm1AFaLAnTlAKaf6734a8Li`; 
             
@@ -288,9 +283,9 @@ module.exports = function(app, webData) {
                         console.log('Results from dataset', results);
                         
 
-                        let data = Object.assign({}, webData, { scrapedData: results });
+                        let movieData = Object.assign({}, webData, {movies:results});
 
-                        res.render('ratings.ejs', data);
+                        res.render('ratings.ejs', movieData);
                         }
 
                     else{

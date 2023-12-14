@@ -10,53 +10,35 @@
     </p>
 
 
+<!-- Display forum posts -->
+<% posts.forEach(function(post) { %>
+    <div class="forum-post">
+        <h2><%= post.title %></h2>
+        <p><%= post.content %></p>
+        <p>Posted by: <%= post.username %> at <%= post.created_at %></p>
 
-    <!-- Display forum posts -->
-    <% posts.forEach(function(post) { %>
-        <div class="forum-post">
-          <h2><%= post.title %></h2>
-          <p><%= post.content %></p>
-          <p>Posted by: <%= post.username %> at <%= post.created_at %></p>
+        <!-- Display comments for this post -->
+        <h3>Comments</h3>
+        <ul>
+            <% if (post.comments && post.comments.length > 0) { %>
+                <% post.comments.forEach(function(comment) { %>
+                    <li><%= comment.comment_content %> - Commented by <%= comment.comment_username %> at <%= comment.comment_created_at %></li>
+                <% }); %>
+            <% } else { %>
+                <li>No comments yet.</li>
+            <% } %>
+        </ul>
 
+        <!-- Comment Submission Form -->
+        <form action="/comment" method="post">
+            <input type="hidden" name="postId" value="<%= post.id %>">
+            <label for="commentContent">Add a comment:</label>
+            <textarea id="commentContent" name="commentContent" rows="4" cols="50" required></textarea>
+            <button type="submit">Submit Comment</button>
+        </form>
 
-            <!-- Display comments for this post -->
-            <h3>Comments</h3>
+    </div>
+<% }); %>
 
-
-            <ul>
-                <% if (post.comments) { %>
-                    <% post.comments.forEach(function(comment) { %>
-                        <li><%= comment.content %> - <%= comment.username %></li>
-                    <% }); %>
-                <% } else { %>
-                    <li>No comments yet.</li>
-                <% } %>
-            </ul>
-            
-
-
-
-
-
-
-
-
-
-
-
-
-             <!-- Comment Submission Form -->
-             <form action="/comment" method="post">
-                <input type="hidden" name="postId" value="<%= post.id %>">
-                <label for="commentContent">Add a comment:</label>
-                <textarea id="commentContent" name="commentContent" rows="4" cols="50" required></textarea>
-                <button type="submit">Submit Comment</button>
-            </form>
-
-        </div>
-      <% }); %>
-  
-      <!-- Link to submit a new post -->
-      <a href="/forum/new">Submit a New Post</a>
-  </body>
-</html>
+<!-- Link to submit a new post -->
+<a href="/forum/new">Submit a New Post</a>

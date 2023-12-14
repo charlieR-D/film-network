@@ -18,6 +18,8 @@ module.exports = function(app, webData) {
 
 
 
+
+
     // Handle our routes
     app.get('/',function(req,res){
         res.render('index.ejs', webData)
@@ -308,21 +310,98 @@ module.exports = function(app, webData) {
 
 
 
-// Display forum posts
-app.get('/forum', redirectLogin, function(req, res) {
+// // Display forum posts
+// app.get('/forum', redirectLogin, function(req, res) {
 
-    let sqlQuery = "SELECT forum_posts.*, userdetails.username FROM forum_posts JOIN userdetails ON forum_posts.user_id = userdetails.id ORDER BY forum_posts.created_at DESC;"
+//     // let sqlQuery = "SELECT forum_posts.*, userdetails.username FROM forum_posts JOIN userdetails ON forum_posts.user_id = userdetails.id ORDER BY forum_posts.created_at DESC;"
+//     let sqlQuery = "SELECT forum_posts.*, userdetails.username, comments.comment_content, comments.comment_id, comments.comment_created_at FROM forum_posts JOIN userdetails ON forum_posts.user_id = userdetails.id LEFT JOIN comments ON forum_posts.id = comments.post_id ORDER BY forum_posts.created_at DESC;"
+
     
+//     db.query(sqlQuery, (err, result) => {
+//         if (err) {
+//             console.error(err.message);
+//             return res.redirect('./');
+//         }
+//         let newData = Object.assign({}, webData, { posts: result });
+//         res.render('forum.ejs', newData);
+//     });
+// });
+
+
+
+
+app.get('/forum', redirectLogin, function(req, res) {
+    let sqlQuery = `
+    SELECT 
+        forum_posts.*, 
+        userdetails.username AS post_username, 
+        comments.content AS comment_content, 
+        comments.id AS comment_id, 
+        comments.created_at AS comment_created_at, 
+        commenter_details.username AS comment_username
+    FROM 
+        forum_posts 
+    JOIN 
+        userdetails ON forum_posts.user_id = userdetails.id
+    LEFT JOIN 
+        comments ON forum_posts.id = comments.post_id
+    LEFT JOIN 
+        userdetails AS commenter_details ON comments.user_id = commenter_details.id
+    ORDER BY 
+        forum_posts.created_at DESC, 
+        comments.created_at ASC;
+`;
     
     db.query(sqlQuery, (err, result) => {
         if (err) {
             console.error(err.message);
             return res.redirect('./');
         }
-        let newData = Object.assign({}, webData, { posts: result });
+
+        let postsMap = new Map();
+
+        result.forEach(row => {
+            if (!postsMap.has(row.id)) {
+                postsMap.set(row.id, {
+                    id: row.id,
+                    title: row.title,
+                    content: row.content,
+                    created_at: row.created_at,
+                    username: row.post_username,
+                    comments: []
+                });
+            }
+
+            console.log(postsMap)
+            
+            let post = postsMap.get(row.id);
+
+            if (row.comment_id) {
+
+                if(!post.comments.find(comment => comment.comment_id === row.comment_id))
+                post.comments.push({
+                    comment_content: row.comment_content,
+                    comment_id: row.comment_id,
+                    comment_created_at: row.comment_created_at,
+                    comment_username: row.comment_username // Added this line
+                });
+            }
+        });
+
+        let newData = Object.assign({}, webData, { posts: Array.from(postsMap.values()) });
         res.render('forum.ejs', newData);
     });
 });
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -379,7 +458,16 @@ app.post('/comment', function (req, res) {
             // Comment saved successfully
             console.log('Comment saved successfully to the database.');
             // Redirect to the post or forum page after comment submission
-            res.redirect('/post/' + newComment.post_id); // Redirect to the post page with the updated comments
+
+
+
+
+            // res.redirect('/post/' + newComment.post_id); // Redirect to the post page with the updated comments
+            res.redirect('/forum'); // Redirect to the post page with the updated comments
+
+
+
+
         }
     });
 });

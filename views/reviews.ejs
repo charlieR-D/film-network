@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+  <head>
+    <title>About <%=webName%></title>
+    <link rel="stylesheet"  type="text/css" href="/main.css" />
+  </head>
+  <body>
+    <h1>About <%=webName%></h1>
+    <p>Welcome to the Film Network - The Film Network is a web application that brings together film fans. 
+        In order to access all the content of the web app, you must register an account. 
+    </p>
+
+    <% if (loginMessage) { %>
+        <p><%= loginMessage %></p>
+    <% } %>
+    
+  </body>
+</html>

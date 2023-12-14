@@ -10,6 +10,10 @@
     <p>Welcome to the Film Network 
     </p>
 
+    <% if (loginMessage) { %>
+        <p><%= loginMessage %></p>
+    <% } %>
+
 
 <!-- Display forum posts -->
 <% posts.forEach(function(post) { %>

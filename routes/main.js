@@ -25,9 +25,17 @@ module.exports = function(app, webData) {
 
     // Handle our routes
     app.get('/',function(req,res){
+
+        let loginMesage = req.query.message
+        webData.loginMessage = loginMesage
+
         res.render('index.ejs', webData)
     });
     app.get('/about',function(req,res){
+
+        let loginMesage = req.query.message
+        webData.loginMessage = loginMesage
+
         res.render('about.ejs', webData);
     });
     app.get('/search', redirectLogin, function(req,res){
@@ -158,7 +166,7 @@ module.exports = function(app, webData) {
                 delete req.session.originalUrl; 
                 
                 // res.redirect('/login?error=Hello '+ ' ' + req.body.username + ' you are now logged in' )
-                res.redirect(redirectTo + '?error=Hello '+ ' ' + req.body.username + ' you are now logged in' );
+                res.redirect(redirectTo + '?message=Hello '+ ' ' + req.body.username);
 
             }
             else {
@@ -187,6 +195,8 @@ module.exports = function(app, webData) {
            //delete a user from the database
 
             app.post('/deleteduser', redirectLogin, function (req,res) {
+
+                let message = req.query.message; // Get the message from query parameters
 
                 // Search for username match in database
                 let sqlquery = "DELETE FROM userdetails WHERE username = ?";
@@ -308,6 +318,9 @@ module.exports = function(app, webData) {
 
                         let movieData = Object.assign({}, webData, {movies:results});
 
+                        let loginMesage = req.query.message
+                        movieData.loginMessage = loginMesage
+
                         res.render('ratings.ejs', movieData);
                         }
 
@@ -350,6 +363,7 @@ module.exports = function(app, webData) {
 
 
 app.get('/forum', redirectLogin, function(req, res) {
+
     let sqlQuery = `
     SELECT 
         forum_posts.*, 
@@ -408,6 +422,10 @@ app.get('/forum', redirectLogin, function(req, res) {
         });
 
         let newData = Object.assign({}, webData, { posts: Array.from(postsMap.values()) });
+
+        let loginMesage = req.query.message
+        newData.loginMessage = loginMesage
+
         res.render('forum.ejs', newData);
     });
 });
@@ -491,7 +509,13 @@ app.post('/comment', function (req, res) {
     });
 });
 
+app.get('/reviews',function(req,res){
 
+    let loginMesage = req.query.message
+    webData.loginMessage = loginMesage
+
+    res.render('reviews.ejs', webData);
+});
 
 
 

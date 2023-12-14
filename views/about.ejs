@@ -6,6 +6,26 @@
   </head>
   <body>
     <h1>About <%=webName%></h1>
+    <p><a href="about">About <%=webName%></a></p>
+    <p><a href="search">Search for books</a></p>
+    <p><a href="register">Register with us</a></p>
+    <p><a href="deleteuser">Delete user</a></p>
+    <p><a href="/ratings">Ratings</a></p>
+    <p><a href="/forum">Forum</a></p>
+    <p><a href="/reviews">Reviews</a></p>
+
+
+
+
+    <% if (loginMessage) { %>
+        <p><%= loginMessage %></p>
+        <p><a href="/logout">Logout</a></p>
+    <% } else { %>
+        <p><a href="/login">Login</a></p>
+    <% } %>
+    
+
+
     <p>Welcome to the Film Network - The Film Network is a web application that brings together film fans. 
         In order to access all the content of the web app, you must register an account. 
     </p>
@@ -13,6 +33,6 @@
     <% if (loginMessage) { %>
         <p><%= loginMessage %></p>
     <% } %>
-    
+
   </body>
 </html>

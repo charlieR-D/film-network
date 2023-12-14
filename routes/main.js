@@ -7,6 +7,15 @@ module.exports = function(app, webData) {
         } else { next (); }
     }
 
+    // const redirectnonlogin = (req, res, next) => {
+    //     if (!req.session.userId ) {
+    //       req.session.originalUrl = req.originalUrl;
+    //     } else { next (); }
+    // }
+
+
+
+
 
 
     const ApifyClient = require('apify-client');
@@ -31,13 +40,19 @@ module.exports = function(app, webData) {
 
         res.render('index.ejs', webData)
     });
-    app.get('/about',function(req,res){
+
+    
+    app.get('/about', function(req,res){
 
         let loginMesage = req.query.message
         webData.loginMessage = loginMesage
 
+        req.session.originalUrl = req.originalUrl;
+
         res.render('about.ejs', webData);
     });
+
+
     app.get('/search', redirectLogin, function(req,res){
         res.render("search.ejs", webData);
     });
@@ -236,6 +251,7 @@ module.exports = function(app, webData) {
         
 
             app.get('/logout', (req,res) => {
+
                 // const redirectTo = req.session.originalUrl || '/';
                 // delete req.session.originalUrl; 
 
@@ -244,6 +260,7 @@ module.exports = function(app, webData) {
                   return res.redirect('./')
                 }
                 res.send('you are now logged out. <a href='+'./'+'>Home</a>');
+
                 // console.log('logout successful')
                 // res.redirect('/forum');
 
@@ -255,7 +272,7 @@ module.exports = function(app, webData) {
             
 
 
-            app.get('/ratings', function(req, res) {
+            app.get('/ratings', redirectLogin, function(req, res) {
             
                 // Prepare the input for the Apify Actor
                 var input = {

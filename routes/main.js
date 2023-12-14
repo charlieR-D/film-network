@@ -7,15 +7,6 @@ module.exports = function(app, webData) {
         } else { next (); }
     }
 
-    // const redirectnonlogin = (req, res, next) => {
-    //     if (!req.session.userId ) {
-    //       req.session.originalUrl = req.originalUrl;
-    //     } else { next (); }
-    // }
-
-
-
-
 
 
     const ApifyClient = require('apify-client');
@@ -35,17 +26,31 @@ module.exports = function(app, webData) {
     // Handle our routes
     app.get('/',function(req,res){
 
-        let loginMesage = req.query.message
-        webData.loginMessage = loginMesage
+        // console.log('User ID set in session:', req.session.userId);
+        // console.log('Session ID:', req.sessionID);
+
+        // let loginMesage = req.query.message
+        // webData.loginMessage = loginMesage
+
+        req.session.loginMessage = 'You are logged in as' + req.session.userId;
+        webData.loginMessage = req.session.loginMessage;
+
 
         res.render('index.ejs', webData)
     });
 
-    
+
     app.get('/about', function(req,res){
 
-        let loginMesage = req.query.message
-        webData.loginMessage = loginMesage
+        console.log('User ID set in session:', req.session.userId);
+        console.log('Session ID:', req.sessionID);
+
+        // let loginMesage = req.query.message
+        // webData.loginMessage = loginMesage
+        req.session.loginMessage = 'You are logged in as' + req.session.userId;
+        webData.loginMessage = req.session.loginMessage;
+
+
 
         req.session.originalUrl = req.originalUrl;
 
@@ -164,6 +169,9 @@ module.exports = function(app, webData) {
 
                 req.session.userId = result[0].id
 
+
+
+
                  
         // Compare the password supplied with the password in the database
         bcrypt.compare(req.body.password, hashedPassword, function(err, result) {
@@ -175,12 +183,19 @@ module.exports = function(app, webData) {
             }
             else if (result == true) {
 
-                // login successful
+                // // Save user session here, when login is successful
+                req.session.userId = req.body.username;
+
+                console.log('User ID set in session:', req.session.userId);
+                console.log('Session ID:', req.sessionID);
+
+                  // login successful
+                //   let message = 'Hello '+ ' ' + req.body.username + ' you are logged in'                
+                //   res.send(message);  
 
                 const redirectTo = req.session.originalUrl || '/';
                 delete req.session.originalUrl; 
                 
-                // res.redirect('/login?error=Hello '+ ' ' + req.body.username + ' you are now logged in' )
                 res.redirect(redirectTo + '?message=Hello '+ ' ' + req.body.username);
 
             }
@@ -335,8 +350,8 @@ module.exports = function(app, webData) {
 
                         let movieData = Object.assign({}, webData, {movies:results});
 
-                        let loginMesage = req.query.message
-                        movieData.loginMessage = loginMesage
+                        req.session.loginMessage = 'You are logged in as' + req.session.userId;
+                        webData.loginMessage = req.session.loginMessage;
 
                         res.render('ratings.ejs', movieData);
                         }
@@ -440,8 +455,11 @@ app.get('/forum', redirectLogin, function(req, res) {
 
         let newData = Object.assign({}, webData, { posts: Array.from(postsMap.values()) });
 
-        let loginMesage = req.query.message
-        newData.loginMessage = loginMesage
+        // let loginMesage = req.query.message
+        // newData.loginMessage = loginMesage
+
+        req.session.loginMessage = 'You are logged in as' + req.session.userId;
+        webData.loginMessage = req.session.loginMessage;
 
         res.render('forum.ejs', newData);
     });
@@ -528,8 +546,11 @@ app.post('/comment', function (req, res) {
 
 app.get('/reviews',function(req,res){
 
-    let loginMesage = req.query.message
-    webData.loginMessage = loginMesage
+    // let loginMesage = req.query.message
+    // webData.loginMessage = loginMesage
+
+    req.session.loginMessage = 'You are logged in as' + req.session.userId;
+    webData.loginMessage = req.session.loginMessage;
 
     res.render('reviews.ejs', webData);
 });

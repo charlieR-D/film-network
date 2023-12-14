@@ -7,8 +7,9 @@
   <body>
     <h1>Film Ratings -  <%=webName%></h1>
 
+    <p><a href='/'>Home</a></p>
     <p><a href="about">About <%=webName%></a></p>
-    <p><a href="search">Search for books</a></p>
+    <p><a href="search">Enter to Search</a></p>
     <p><a href="register">Register with us</a></p>
     <p><a href="deleteuser">Delete user</a></p>
     <p><a href="/ratings">Ratings</a></p>
@@ -17,14 +18,14 @@
 
 
 
+    <% if (isLoggedIn) { %>
+      <p><%= loginMessage %></p>
+      <p><a href="/logout">Logout</a></p>
+  <% } else { %>
+      <p><a href="/login">Login</a></p>
+  <% } %>
+  
 
-    <% if (loginMessage) { %>
-        <p><%= loginMessage %></p>
-        <p><a href="/logout">Logout</a></p>
-    <% } else { %>
-        <p><a href="/login">Login</a></p>
-    <% } %>
-    
 
 
 

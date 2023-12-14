@@ -26,6 +26,15 @@ app.use(session({
     }
 }));
 
+
+app.use((req, res, next) => {
+    res.locals.isLoggedIn = !!req.session.userId;
+    next();
+});
+
+
+
+
 app.use(expressSanitizer());
 
 // Define the database connection

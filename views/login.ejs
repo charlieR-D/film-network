@@ -6,6 +6,11 @@
   </head>
   <body>
     <h1>Login for <%=webName%></h1>
+
+    <% if (error) { %>
+      <p><%= error %></p>
+  <% } %>
+  
     <form method="POST" action="/loggedin">
         <p>Username: <input id="username" type="text" name="username" value="username" /></p>
         <p>Password: <input id="password" type="password" name="password" value="password" /></p>

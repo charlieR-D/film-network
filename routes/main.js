@@ -2,9 +2,12 @@ module.exports = function(app, webData) {
 
     const redirectLogin = (req, res, next) => {
         if (!req.session.userId ) {
+          req.session.originalUrl = req.originalUrl;
           res.redirect('./login')
         } else { next (); }
     }
+
+
 
     const ApifyClient = require('apify-client');
 
@@ -105,7 +108,11 @@ module.exports = function(app, webData) {
     
     
     app.get('/login',function(req,res){
-        res.render('login.ejs', webData);
+
+        var errorMessage = req.query.error;
+        let loginData = Object.assign({}, webData, {error:errorMessage});
+
+        res.render('login.ejs', loginData);
     });
 
 
@@ -146,21 +153,25 @@ module.exports = function(app, webData) {
             else if (result == true) {
 
                 // login successful
-                let message = 'Hello '+ ' ' + req.body.username + ' you are logged in'                
-                res.send(message);   
+
+                const redirectTo = req.session.originalUrl || '/';
+                delete req.session.originalUrl; 
+                
+                // res.redirect('/login?error=Hello '+ ' ' + req.body.username + ' you are now logged in' )
+                res.redirect(redirectTo + '?error=Hello '+ ' ' + req.body.username + ' you are now logged in' );
+
             }
             else {
                 // login unsuccessful
-                let message = 'Login unsuccessful, please try again'
-                res.send(message);
+                res.redirect('/login?error=Your Password is incorrect, please try again')
          }
        })
 
             } else {
 
                 //No user found in database
-                let message  = "username incorrect or not found";
-                res.send(message);
+
+                res.redirect('/login?error=Username is incorrect or does not exist, please try again')
 
             }
   })
@@ -214,16 +225,24 @@ module.exports = function(app, webData) {
             }); 
         
 
-            app.get('/logout', redirectLogin, (req,res) => {
+            app.get('/logout', (req,res) => {
+                // const redirectTo = req.session.originalUrl || '/';
+                // delete req.session.originalUrl; 
+
                 req.session.destroy(err => {
                 if (err) {
                   return res.redirect('./')
                 }
                 res.send('you are now logged out. <a href='+'./'+'>Home</a>');
+                // console.log('logout successful')
+                // res.redirect('/forum');
+
                 })
             })
 
 
+            
+            
 
 
             app.get('/ratings', function(req, res) {

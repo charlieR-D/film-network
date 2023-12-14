@@ -30,21 +30,21 @@ module.exports = function(app, webData) {
     });
 
 
-    app.get('/search-result', function (req, res) {
-        //searching in the database
-        //res.send("You searched for: " + req.query.keyword);
+    // app.get('/search-result', function (req, res) {
+    //     //searching in the database
+    //     //res.send("You searched for: " + req.query.keyword);
 
-        let sqlquery = "SELECT * FROM books WHERE name LIKE '%" + req.query.keyword + "%'"; // query database to get all the books
-        // execute sql query
-        db.query(sqlquery, (err, result) => {
-            if (err) {
-                res.redirect('./'); 
-            }
-            let newData = Object.assign({}, webData, {availableBooks:result});
-            console.log(newData)
-            res.render("list.ejs", newData)
-         });        
-    });
+    //     let sqlquery = "SELECT * FROM books WHERE name LIKE '%" + req.query.keyword + "%'"; // query database to get all the books
+    //     // execute sql query
+    //     db.query(sqlquery, (err, result) => {
+    //         if (err) {
+    //             res.redirect('./'); 
+    //         }
+    //         let newData = Object.assign({}, webData, {availableBooks:result});
+    //         console.log(newData)
+    //         res.render("list.ejs", newData)
+    //      });        
+    // });
 
 
     app.get('/register', function (req,res) {
@@ -59,7 +59,7 @@ module.exports = function(app, webData) {
          req.body.username = req.sanitize(req.body.username)
          req.body.password = req.sanitize(req.body.password)
          req.body.email = req.sanitize(req.body.email)
- 
+
         const plainPassword = req.body.password;
 
 
@@ -112,12 +112,13 @@ module.exports = function(app, webData) {
     app.post('/loggedin', function (req,res) {
 
          // Search for hashed password in your database.
-         let sqlquery = "SELECT hashedPassword FROM userdetails WHERE username = ?";
-         let user = [req.body.username];
+         let sqlquery = "SELECT id, hashedPassword FROM userdetails WHERE username = ?";
+         let userName = [req.body.username];
+
 
 
           // execute sql query
-          db.query(sqlquery, user, (err, result) => {
+          db.query(sqlquery, userName, (err, result) => {
 
             if (err) {
                return console.error(err.message);
@@ -126,6 +127,10 @@ module.exports = function(app, webData) {
 
                 //username found in database
                 let hashedPassword = result[0].hashedPassword;
+
+                console.log("id is " + result[0].id);
+
+                req.session.userId = result[0].id
 
                  
         // Compare the password supplied with the password in the database
@@ -137,9 +142,6 @@ module.exports = function(app, webData) {
             return console.log(err.message);
             }
             else if (result == true) {
-
-                // Save user session here, when login is successful
-                req.session.userId = req.body.username;
 
                 // login successful
                 let message = 'Hello '+ ' ' + req.body.username + ' you are logged in'                
@@ -306,10 +308,81 @@ module.exports = function(app, webData) {
 
 
 
+// Display forum posts
+app.get('/forum', redirectLogin, function(req, res) {
+
+    let sqlQuery = "SELECT forum_posts.*, userdetails.username FROM forum_posts JOIN userdetails ON forum_posts.user_id = userdetails.id ORDER BY forum_posts.created_at DESC;"
+    
+    
+    db.query(sqlQuery, (err, result) => {
+        if (err) {
+            console.error(err.message);
+            return res.redirect('./');
+        }
+        let newData = Object.assign({}, webData, { posts: result });
+        res.render('forum.ejs', newData);
+    });
+});
+
+
+
+// Render a page to submit a new forum post
+app.get('/forum/new', redirectLogin, function(req, res) {
+    res.render('newpost.ejs', webData);
+});
+
+// Handle new post submission
+app.post('/forum', redirectLogin, function(req, res) {
+
+    let newPost = {
+        user_id: req.session.userId, // Assuming you store the user's ID in the session
+        title: req.sanitize(req.body.title),
+        content: req.sanitize(req.body.content)
+    };
+
+    console.log("User ID:", newPost.user_id); // Add this line for debugging
+
+    let sqlQuery = "INSERT INTO forum_posts (user_id, title, content) VALUES (?, ?, ?)";
+    db.query(sqlQuery, [newPost.user_id, newPost.title, newPost.content], (err, result) => {
+        if (err) {
+            console.error(err.message);
+            return res.redirect('/forum/new');
+        }
+        res.redirect('/forum');
+    });
+});
 
 
 
 
+// Handle comment submission
+app.post('/comment', function (req, res) {
+    // Create a comment object
+    let newComment = {
+        post_id: req.body.postId, // ID of the post the comment is associated with
+        user_id: req.session.userId, // Assuming you store the user's ID in the session
+        content: req.sanitize(req.body.commentContent) // Sanitize the comment content if needed
+    };
+
+    console.log("User ID:", newComment.user_id); // Add this line for debugging
+
+    // Define the SQL query to insert the comment into the database
+    let sqlQuery = "INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)";
+    
+    // Execute the SQL query with the comment data
+    db.query(sqlQuery, [newComment.post_id, newComment.user_id, newComment.content], (err, result) => {
+        if (err) {
+            console.error("Error saving comment to the database:", err.message);
+            // Handle the error (e.g., send an error response)
+            res.status(500).json({ error: 'An error occurred while saving the comment.' });
+        } else {
+            // Comment saved successfully
+            console.log('Comment saved successfully to the database.');
+            // Redirect to the post or forum page after comment submission
+            res.redirect('/post/' + newComment.post_id); // Redirect to the post page with the updated comments
+        }
+    });
+});
 
 
 

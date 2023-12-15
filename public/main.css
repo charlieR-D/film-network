@@ -8,6 +8,16 @@
     
     }
     
+    .indextitle{
+
+      font-size: 70px;
+      font-family: cursive;
+      display: flex;
+      justify-content: center;
+      padding-top: 200px;
+      
+
+    }
     
 
     .main-nav {
@@ -124,3 +134,18 @@
         padding-right: 50px;
 
       }
+
+
+      .login-box{
+
+        text-align: center;
+        padding-top: 15px;
+
+}
+.login-title{
+
+text-align: center;
+padding-top: 20px;
+font-family: sans-serif;
+
+}

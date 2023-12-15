@@ -5,17 +5,18 @@
     <link rel="stylesheet"  type="text/css" href="/main.css" />
   </head>
   <body>
-    <h1>Login for <%=webName%></h1>
+    <h1 class = "login-title">Login for <%=webName%></h1>
     
     <% if (error) { %>
       <p><%= error %></p>
   <% } %>
 
-  
+<div class = "login-box">
     <form method="POST" action="/loggedin">
         <p>Username: <input id="username" type="text" name="username" value="username" /></p>
         <p>Password: <input id="password" type="password" name="password" value="password" /></p>
         <input type="submit" value="Login" />
       </form>
+</div>
   </body>
 </html>

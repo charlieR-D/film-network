@@ -1,0 +1,105 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .main-nav {
+    background-color: #333;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    align-items: center;
+  }
+  
+  .nav-links, .login-logout {
+    list-style-type: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .nav-links li, .login-logout li {
+    padding: 10px 20px;
+  }
+  
+  .nav-links li a, .login-logout li a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .nav-links li a:hover, .login-logout li a:hover {
+    background-color: #111;
+  }
+  
+  .search-container {
+    flex-grow: 1; /* Allow search container to fill the space */
+    display: flex;
+    justify-content: center; /* Center search form */
+  }
+  
+  #search-box {
+    padding: 6px;
+    border: none;
+    border-radius: 4px;
+  }
+  
+  input[type="submit"] {
+    padding: 6px 10px;
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  input[type="submit"]:hover {
+    background-color: #666;
+  }
+  
+  .login-message {
+    color: white; /* Light blue color for the login message */
+    padding-left: 5px;
+    padding-right: 20px;
+  }
+  
+  .login-logout {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+  }
+  
+  /* Responsive styling */
+  @media screen and (max-width: 600px) {
+    .main-nav {
+      flex-direction: column;
+    }
+  
+    .search-container {
+      order: -1; /* Move search container to top */
+    }
+  
+    .nav-links, .login-logout {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .nav-links li, .login-logout li {
+      display: block;
+      width: 100%;
+      padding: 10px;
+    }
+  
+    #search-box, input[type="submit"] {
+      width: calc(100% - 20px); /* Adjust width for padding */
+      box-sizing: border-box; /* Include padding in width */
+    }
+  
+    .login-logout li a {
+      width: 100%;
+      box-sizing: border-box; /* Include padding in width */
+      text-align: center;
+    }
+  }
+  

@@ -2,37 +2,44 @@
 <html>
   <head>
     <title>Film Ratings -  <%=webName%></title>
-    <link rel="stylesheet"  type="text/css" href="/test.css" />
+    <link rel="stylesheet"  type="text/css" href="/main.css" />
   </head>
   <body>
-    <h1>Film Ratings -  <%=webName%></h1>
-
-    <p><a href='/'>Home</a></p>
-    <p><a href="about">About <%=webName%></a></p>
-    <p><a href="search">Enter to Search</a></p>
-    <p><a href="register">Register with us</a></p>
-    <p><a href="deleteuser">Delete user</a></p>
-    <p><a href="/ratings">Ratings</a></p>
-    <p><a href="/forum">Forum</a></p>
-    <p><a href="/reviews">Reviews</a></p>
-
-
-    <form action="/search-result" method="GET">
-      <p>Search for a User</p>
-      <input id="search-box" type="text" name="keyword" value="">
-      <input type="submit" value="Search" >
-    </form>
-
+    <h4 class = "maintitle"> The <%=webName%></h4>
     
-
-    <% if (isLoggedIn) { %>
-      <p><%= loginMessage %></p>
-      <p><a href="/logout">Logout</a></p>
-  <% } else { %>
-      <p><a href="/login">Login</a></p>
-  <% } %>
-  
-
+        
+        <nav class="main-nav">
+    
+            <% if (isLoggedIn) { %>
+                <div class="login-message-container">
+                  <span class="login-message"><%= loginMessage %></span>
+                  <a href="/logout">Logout</a>
+                </div>
+              <% } else { %>
+                <div class="login-message-container">
+                  <a href="/login">Login</a>
+                </div>
+              <% } %>
+    
+            <ul class = "nav-links">
+                <li><a href='/'>Home</a></li>
+                <li><a href="about">About</a></li>
+                <li><a href="register">Register </a></li>
+                <li><a href="deleteuser">Delete Account</a></li>
+                <li><a href="/ratings">Ratings</a></li>
+                <li><a href="/forum">Forum</a></li>
+            </ul>
+            <div class="search-container">
+                <form action="/search-result" method="GET">
+                  <input id="search-box" type="text" name="keyword" placeholder="Search for a User">
+                  <input type="submit" value="Search">
+                </form>
+              </div>
+          </nav>
+        
+    
+    
+       
 
 
 

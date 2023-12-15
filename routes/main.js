@@ -32,7 +32,7 @@ module.exports = function(app, webData) {
         // let loginMesage = req.query.message
         // webData.loginMessage = loginMesage
 
-        req.session.loginMessage = 'You are logged in as' + ' ' + req.session.userId;
+        req.session.loginMessage = 'Welcome' + ' ' + req.session.userId;
         webData.loginMessage = req.session.loginMessage;
 
 
@@ -47,7 +47,7 @@ module.exports = function(app, webData) {
 
         // let loginMesage = req.query.message
         // webData.loginMessage = loginMesage
-        req.session.loginMessage = 'You are logged in as' + ' ' + req.session.userId;
+        req.session.loginMessage = 'Welcome' + ' ' + req.session.userId;
         webData.loginMessage = req.session.loginMessage;
 
 
@@ -332,7 +332,7 @@ module.exports = function(app, webData) {
 
                         let movieData = Object.assign({}, webData, {movies:results});
 
-                        req.session.loginMessage = 'You are logged in as' + req.session.userId;
+                        req.session.loginMessage = 'Welcome' + req.session.userId;
                         webData.loginMessage = req.session.loginMessage;
 
                         res.render('ratings.ejs', movieData);
@@ -440,7 +440,7 @@ app.get('/forum', redirectLogin, function(req, res) {
         // let loginMesage = req.query.message
         // newData.loginMessage = loginMesage
 
-        req.session.loginMessage = 'You are logged in as' + req.session.userId;
+        req.session.loginMessage = 'Welcome' + req.session.userId;
         webData.loginMessage = req.session.loginMessage;
 
         res.render('forum.ejs', newData);
@@ -526,28 +526,15 @@ app.post('/comment', function (req, res) {
     });
 });
 
-app.get('/reviews',function(req,res){
 
-    // let loginMesage = req.query.message
-    // webData.loginMessage = loginMesage
-
-    req.session.loginMessage = 'You are logged in as' + req.session.userId;
-    webData.loginMessage = req.session.loginMessage;
-
-    res.render('reviews.ejs', webData);
-});
-
-
-
-
-
-//   app.get('/search', redirectLogin, function(req,res){
-//         res.render("search.ejs", webData);
-//     });
 
 
   // Search for users form handler
   app.get('/search-result', function (req, res) {
+
+
+    req.session.loginMessage = 'You are logged in as' + req.session.userId;
+    webData.loginMessage = req.session.loginMessage;
 
     //searching in the database
     let term = '%' + req.query.keyword + '%'
@@ -565,6 +552,8 @@ app.get('/reviews',function(req,res){
 
     // Pass results to the EJS page and view it
     let newData = Object.assign({}, webData, {users:result});
+
+   
 
     res.render('results.ejs', newData);
         });

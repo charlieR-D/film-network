@@ -5,40 +5,55 @@
     <link rel="stylesheet"  type="text/css" href="/main.css" />
   </head>
   <body>
-    <h1>About <%=webName%></h1>
+    <h4 class = "maintitle"> The <%=webName%></h4>
 
-    <p><a href='/'>Home</a></p>
-    <p><a href="about">About <%=webName%></a></p>
-    <p><a href="search">Enter to Search</a></p>
-    <p><a href="register">Register with us</a></p>
-    <p><a href="deleteuser">Delete user</a></p>
-    <p><a href="/ratings">Ratings</a></p>
-    <p><a href="/forum">Forum</a></p>
-    <p><a href="/reviews">Reviews</a></p>
+    
+    <nav class="main-nav">
 
+        <% if (isLoggedIn) { %>
+            <div class="login-message-container">
+              <span class="login-message"><%= loginMessage %></span>
+              <a href="/logout">Logout</a>
+            </div>
+          <% } else { %>
+            <div class="login-message-container">
+              <a href="/login">Login</a>
+            </div>
+          <% } %>
 
-
-    <form action="/search-result" method="GET">
-        <p>Search for a User</p>
-        <input id="search-box" type="text" name="keyword" value="">
-        <input type="submit" value="Search" >
-      </form>
-  
-
-
-   
-    <% if (isLoggedIn) { %>
-        <p><%= loginMessage %></p>
-        <p><a href="/logout">Logout</a></p>
-    <% } else { %>
-        <p><a href="/login">Login</a></p>
-    <% } %>
+        <ul class = "nav-links">
+            <li><a href='/'>Home</a></li>
+            <li><a href="about">About</a></li>
+            <li><a href="register">Register </a></li>
+            <li><a href="deleteuser">Delete Account</a></li>
+            <li><a href="/ratings">Ratings</a></li>
+            <li><a href="/forum">Forum</a></li>
+        </ul>
+        <div class="search-container">
+            <form action="/search-result" method="GET">
+              <input id="search-box" type="text" name="keyword" placeholder="Search for a User">
+              <input type="submit" value="Search">
+            </form>
+          </div>
+      </nav>
     
 
 
-    <p>Welcome to the Film Network - The Film Network is a web application that brings together film fans. 
-        In order to access all the content of the web app, you must register an account. 
-    </p>
+   
+
+    <main>
+        <h2 class = "abouttitle">The About Page</h2>
+        <p class = "abouttext">Welcome to the Film Network - The Film Network is a web application that brings together film fans. 
+            In order to access all the content of the web app, you must register an account. 
+    
+            Click on one of our pages including the ratings page or the forums page where you can interact with other users and leave comments and posts
+    
+            If you want to delete your account, click on delete user.
+    
+            Thanks for visiting the Film Network
+        </p>
+
+    </main>
 
   </body>
 </html>

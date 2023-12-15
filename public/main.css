@@ -149,3 +149,28 @@ padding-top: 20px;
 font-family: sans-serif;
 
 }
+
+
+
+.user-box {
+  display: flex;
+flex-direction: column; 
+ border: 1px solid #ddd;
+  padding: 10px;         
+  margin-bottom: 10px;   
+  border-radius: 5px;    
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  list-style: none;
+}
+
+.user-box p {
+  margin-bottom: 15px
+}
+
+
+.utitle{
+
+  font-family: sans-serif;
+  font-size: 18px;
+  font-style: bold;
+}

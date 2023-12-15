@@ -6,6 +6,7 @@
   </head>
   <body>
     <h4 class = "maintitle"> The <%=webName%></h4>
+
     
     <nav class="main-nav">
 
@@ -35,16 +36,17 @@
             </form>
           </div>
       </nav>
-
-<main>
-  <h3>User - Search Results:</h3>
-
-</main>
-
     
 
 
-   
+    <ul>
+      <% users.forEach(function(user) { %>
+        <li class = "user-box"><p class = "utitle">Username:</p><%= user.username %>,<p class = utitle>Name:</p> <%=user.first%>,<p class = utitle>Surname:</p><%=user.last%> </li>
+        <br>
+        <br>
+      <% }) %>
+    </ul>
+
 
   </body>
 </html>

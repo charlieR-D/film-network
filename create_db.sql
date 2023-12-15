@@ -15,8 +15,8 @@ CREATE TABLE userdetails(id INT AUTO_INCREMENT PRIMARY KEY,username VARCHAR(50),
 
 CREATE TABLE comments (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    post_id INT,  -- Reference to the post being commented on
-    user_id INT,  -- Reference to the user who made the comment
+    post_id INT,  
+    user_id INT, 
     content TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

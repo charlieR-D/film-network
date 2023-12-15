@@ -17,6 +17,7 @@ module.exports = function(app, webData) {
     const request = require('request');
 
     var runId;
+    var savedUsername;
 
 
 
@@ -24,15 +25,9 @@ module.exports = function(app, webData) {
 
 
     // Handle our routes
-    app.get('/',function(req,res){
+    app.get('/',function(req,res){   
 
-        // console.log('User ID set in session:', req.session.userId);
-        // console.log('Session ID:', req.sessionID);
-
-        // let loginMesage = req.query.message
-        // webData.loginMessage = loginMesage
-
-        req.session.loginMessage = 'Welcome' + ' ' + req.session.userId;
+        req.session.loginMessage = 'Welcome' + ' ' + savedUsername;
         webData.loginMessage = req.session.loginMessage;
 
 
@@ -42,15 +37,11 @@ module.exports = function(app, webData) {
 
     app.get('/about', function(req,res){
 
-        console.log('User ID set in session:', req.session.userId);
+        console.log('User ID in session:', savedUsername);
         console.log('Session ID:', req.sessionID);
 
-        // let loginMesage = req.query.message
-        // webData.loginMessage = loginMesage
-        req.session.loginMessage = 'Welcome' + ' ' + req.session.userId;
+        req.session.loginMessage = 'Welcome' + ' ' + savedUsername;
         webData.loginMessage = req.session.loginMessage;
-
-
 
         req.session.originalUrl = req.originalUrl;
 
@@ -164,19 +155,19 @@ module.exports = function(app, webData) {
             else if (result == true) {
 
                 // // Save user session here, when login is successful
-                req.session.userId = req.body.username;
+
+
+                 savedUsername = req.body.username;
 
                 console.log('User ID set in session:', req.session.userId);
                 console.log('Session ID:', req.sessionID);
 
-                  // login successful
-                //   let message = 'Hello '+ ' ' + req.body.username + ' you are logged in'                
-                //   res.send(message);  
+
 
                 const redirectTo = req.session.originalUrl || '/';
                 delete req.session.originalUrl; 
                 
-                res.redirect(redirectTo + '?message=Hello '+ ' ' + req.body.username);
+                res.redirect(redirectTo + '?message=Hello '+ ' ' + savedUsername);
 
             }
             else {
@@ -256,11 +247,6 @@ module.exports = function(app, webData) {
 
                 res.redirect(redirectTo);
 
-                // res.send('you are now logged out. <a href='+'./'+'>Home</a>');
-
-                // console.log('logout successful')
-                // res.redirect('/forum');
-
                 })
             })
 
@@ -285,7 +271,8 @@ module.exports = function(app, webData) {
             
                 var actorApiUrl = 'https://api.apify.com/v2/acts/rado.ch~rotten-tomatoes-scraper/runs?token=apify_api_ehQMpaOXevsi0gm1AFaLAnTlAKaf6734a8Li'; // Replace YOUR_API_TOKEN with your actual Apify token
 
-                // Send a POST request to the Apify API to start the actor
+                // Sending a POST request to  Apify API to start 
+
                 request.post({
                     url: actorApiUrl,
                     json: input
@@ -307,13 +294,13 @@ module.exports = function(app, webData) {
 
                     //for big API
                     // var runId = 'QaPn6ZdQ20oPxaQ6y';
+
+
                     var runId = 'e72DEbjHgaHGrfTBJ';
 
                     var getDatasetUrl = `https://api.apify.com/v2/datasets/${runId}/items?token=apify_api_ehQMpaOXevsi0gm1AFaLAnTlAKaf6734a8Li`; 
             
         
-
-                    // Poll the Apify dataset for results (this may need to be delayed or repeated based on actor execution time)
                    
                     request(getDatasetUrl, function(err, response, body) {
                         if (err) {
@@ -332,7 +319,7 @@ module.exports = function(app, webData) {
 
                         let movieData = Object.assign({}, webData, {movies:results});
 
-                        req.session.loginMessage = 'Welcome' + req.session.userId;
+                        req.session.loginMessage = 'Welcome' + savedUsername;
                         webData.loginMessage = req.session.loginMessage;
 
                         res.render('ratings.ejs', movieData);
@@ -352,26 +339,6 @@ module.exports = function(app, webData) {
 
             });
             
-
-
-
-
-// // Display forum posts
-// app.get('/forum', redirectLogin, function(req, res) {
-
-//     // let sqlQuery = "SELECT forum_posts.*, userdetails.username FROM forum_posts JOIN userdetails ON forum_posts.user_id = userdetails.id ORDER BY forum_posts.created_at DESC;"
-//     let sqlQuery = "SELECT forum_posts.*, userdetails.username, comments.comment_content, comments.comment_id, comments.comment_created_at FROM forum_posts JOIN userdetails ON forum_posts.user_id = userdetails.id LEFT JOIN comments ON forum_posts.id = comments.post_id ORDER BY forum_posts.created_at DESC;"
-
-    
-//     db.query(sqlQuery, (err, result) => {
-//         if (err) {
-//             console.error(err.message);
-//             return res.redirect('./');
-//         }
-//         let newData = Object.assign({}, webData, { posts: result });
-//         res.render('forum.ejs', newData);
-//     });
-// });
 
 
 
@@ -437,10 +404,8 @@ app.get('/forum', redirectLogin, function(req, res) {
 
         let newData = Object.assign({}, webData, { posts: Array.from(postsMap.values()) });
 
-        // let loginMesage = req.query.message
-        // newData.loginMessage = loginMesage
 
-        req.session.loginMessage = 'Welcome' + req.session.userId;
+        req.session.loginMessage = 'Welcome' + savedUsername;
         webData.loginMessage = req.session.loginMessage;
 
         res.render('forum.ejs', newData);
@@ -468,12 +433,12 @@ app.get('/forum/new', redirectLogin, function(req, res) {
 app.post('/forum', redirectLogin, function(req, res) {
 
     let newPost = {
-        user_id: req.session.userId, // Assuming you store the user's ID in the session
+        user_id: req.session.userId, 
         title: req.sanitize(req.body.title),
         content: req.sanitize(req.body.content)
     };
 
-    console.log("User ID:", newPost.user_id); // Add this line for debugging
+    console.log("User ID:", newPost.user_id); 
 
     let sqlQuery = "INSERT INTO forum_posts (user_id, title, content) VALUES (?, ?, ?)";
     db.query(sqlQuery, [newPost.user_id, newPost.title, newPost.content], (err, result) => {
@@ -493,28 +458,24 @@ app.post('/comment', function (req, res) {
     // Create a comment object
     let newComment = {
         post_id: req.body.postId, // ID of the post the comment is associated with
-        user_id: req.session.userId, // Assuming you store the user's ID in the session
-        content: req.sanitize(req.body.commentContent) // Sanitize the comment content if needed
+        user_id: req.session.userId, 
+        content: req.sanitize(req.body.commentContent) // Sanitizing the comment 
     };
 
-    console.log("User ID:", newComment.user_id); // Add this line for debugging
-
-    // Define the SQL query to insert the comment into the database
+    //  SQL query to insert the comment into the database
     let sqlQuery = "INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)";
     
-    // Execute the SQL query with the comment data
+    // SQL query with the comment data
     db.query(sqlQuery, [newComment.post_id, newComment.user_id, newComment.content], (err, result) => {
         if (err) {
             console.error("Error saving comment to the database:", err.message);
-            // Handle the error (e.g., send an error response)
             res.status(500).json({ error: 'An error occurred while saving the comment.' });
         } else {
-            // Comment saved successfully
+            // Comment saved to database
             console.log('Comment saved successfully to the database.');
-            // Redirect to the post or forum page after comment submission
 
 
-
+            // Redirect to the page after comment submitted
 
             // res.redirect('/post/' + newComment.post_id); // Redirect to the post page with the updated comments
             res.redirect('/forum'); // Redirect to the post page with the updated comments
@@ -533,7 +494,7 @@ app.post('/comment', function (req, res) {
   app.get('/search-result', function (req, res) {
 
 
-    req.session.loginMessage = 'You are logged in as' + req.session.userId;
+    req.session.loginMessage = 'You are logged in as' + savedUsername;
     webData.loginMessage = req.session.loginMessage;
 
     //searching in the database
@@ -541,7 +502,6 @@ app.post('/comment', function (req, res) {
 
 
 
-    // searches the vp_entry view which returns the view posts page but only posts that match the search
     let sqlquery = 'SELECT * FROM userdetails WHERE username LIKE ? OR first LIKE ?'
 
     db.query(sqlquery, [term, term], (err, result) => {

@@ -459,17 +459,6 @@ app.post('/comment', function (req, res) {
     });      
 
 
-  
-
-  
-
-
-
-
-
-
-
-
 
 
 }

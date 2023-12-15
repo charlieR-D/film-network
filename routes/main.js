@@ -37,9 +37,6 @@ module.exports = function(app, webData) {
 
     app.get('/about', function(req,res){
 
-        console.log('User ID in session:', savedUsername);
-        console.log('Session ID:', req.sessionID);
-
         req.session.loginMessage = 'Welcome' + ' ' + savedUsername;
         webData.loginMessage = req.session.loginMessage;
 
@@ -283,17 +280,8 @@ module.exports = function(app, webData) {
                         return;
                     }
 
-                    // var runId = body.data.defaultDatasetId; // Get the ID of the actor run
-                    console.log(runId)
 
-                    function pollForDataset() {
-
-
-                        // for simple API/Series
-                    // var runId = 'wzrMggBLbQAZ7zCKg';
-
-                    //for big API
-                    // var runId = 'QaPn6ZdQ20oPxaQ6y';
+                    function startAPI() {
 
 
                     var runId = 'e72DEbjHgaHGrfTBJ';
@@ -327,12 +315,12 @@ module.exports = function(app, webData) {
 
                     else{
                         console.log('Waiting for dataset...');
-                        return setTimeout(pollForDataset, 10000);
+                        return setTimeout(startAPI, 10000);
                     }
 
             });
         }
-        pollForDataset();
+        startAPI();
 
 
                 });
@@ -386,7 +374,6 @@ app.get('/forum', redirectLogin, function(req, res) {
                 });
             }
 
-            console.log(postsMap)
             
             let post = postsMap.get(row.id);
 
@@ -455,6 +442,7 @@ app.post('/forum', redirectLogin, function(req, res) {
 
 // Handle comment submission
 app.post('/comment', function (req, res) {
+
     // Create a comment object
     let newComment = {
         post_id: req.body.postId, // ID of the post the comment is associated with
@@ -475,9 +463,7 @@ app.post('/comment', function (req, res) {
             console.log('Comment saved successfully to the database.');
 
 
-            // Redirect to the page after comment submitted
 
-            // res.redirect('/post/' + newComment.post_id); // Redirect to the post page with the updated comments
             res.redirect('/forum'); // Redirect to the post page with the updated comments
 
 

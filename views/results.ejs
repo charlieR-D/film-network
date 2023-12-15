@@ -6,13 +6,8 @@
   </head>
   <body>
     <h1>About <%=webName%></h1>
-    <p>Results
-      form action="/search-result" method="GET">
-      <p>Search for a User</p>
-      <input id="search-box" type="text" name="keyword" value="Default">
-      <input type="submit" value="Search" >
-    </form>
-    </p>
+    <p>Results from Search</p>
+
 
 
     
@@ -26,7 +21,13 @@
     <p><a href="/reviews">Reviews</a></p>
 
 
-
+    <ul>
+      <% users.forEach(function(user) { %>
+        <h3>Username:</h3><%= user.username %>,<h3>Name:</h3> <%=user.first%>,<h3>Surname:</h3><%=user.last%>
+        <br>
+        <br>
+      <% }) %>
+    </ul>
 
    
     <% if (isLoggedIn) { %>

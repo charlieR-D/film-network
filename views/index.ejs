@@ -19,6 +19,19 @@
 
 
 
+    <form action="/search-result" method="GET">
+        <p>Search for a User</p>
+        <input id="search-box" type="text" name="keyword" value="">
+        <input type="submit" value="Search" >
+      </form>
+  
+
+
+
+
+
+
+
     <% if (isLoggedIn) { %>
         <p><%= loginMessage %></p>
         <p><a href="/logout">Logout</a></p>

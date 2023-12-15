@@ -174,3 +174,11 @@ flex-direction: column;
   font-size: 18px;
   font-style: bold;
 }
+
+
+.search-result{
+
+  font-size: 30px;
+  padding-left: 50px;
+  font-family: sans-serif;
+}

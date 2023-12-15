@@ -32,7 +32,7 @@ module.exports = function(app, webData) {
         // let loginMesage = req.query.message
         // webData.loginMessage = loginMesage
 
-        req.session.loginMessage = 'You are logged in as' + req.session.userId;
+        req.session.loginMessage = 'You are logged in as' + ' ' + req.session.userId;
         webData.loginMessage = req.session.loginMessage;
 
 
@@ -47,7 +47,7 @@ module.exports = function(app, webData) {
 
         // let loginMesage = req.query.message
         // webData.loginMessage = loginMesage
-        req.session.loginMessage = 'You are logged in as' + req.session.userId;
+        req.session.loginMessage = 'You are logged in as' + ' ' + req.session.userId;
         webData.loginMessage = req.session.loginMessage;
 
 
@@ -58,26 +58,6 @@ module.exports = function(app, webData) {
     });
 
 
-    app.get('/search', redirectLogin, function(req,res){
-        res.render("search.ejs", webData);
-    });
-
-
-    // app.get('/search-result', function (req, res) {
-    //     //searching in the database
-    //     //res.send("You searched for: " + req.query.keyword);
-
-    //     let sqlquery = "SELECT * FROM books WHERE name LIKE '%" + req.query.keyword + "%'"; // query database to get all the books
-    //     // execute sql query
-    //     db.query(sqlquery, (err, result) => {
-    //         if (err) {
-    //             res.redirect('./'); 
-    //         }
-    //         let newData = Object.assign({}, webData, {availableBooks:result});
-    //         console.log(newData)
-    //         res.render("list.ejs", newData)
-    //      });        
-    // });
 
 
     app.get('/register', function (req,res) {
@@ -267,14 +247,16 @@ module.exports = function(app, webData) {
 
             app.get('/logout', (req,res) => {
 
-                // const redirectTo = req.session.originalUrl || '/';
-                // delete req.session.originalUrl; 
+                const redirectTo = req.session.originalUrl || '/';
 
                 req.session.destroy(err => {
                 if (err) {
                   return res.redirect('./')
                 }
-                res.send('you are now logged out. <a href='+'./'+'>Home</a>');
+
+                res.redirect(redirectTo);
+
+                // res.send('you are now logged out. <a href='+'./'+'>Home</a>');
 
                 // console.log('logout successful')
                 // res.redirect('/forum');
@@ -558,7 +540,77 @@ app.get('/reviews',function(req,res){
 
 
 
+
+  app.get('/search', redirectLogin, function(req,res){
+        res.render("search.ejs", webData);
+    });
+
+
+// Search for Posts form handler
+app.get('/search-result', function (req, res) {
+    //searching in the database
+    let term = '%' + req.query.keyword + '%'
+
+
+
+    // searches the vp_entry view which returns the view posts page but only posts that match the search
+    let sqlquery = `SELECT * FROM userdetails WHERE  post_title LIKE ? OR post_content LIKE ?`
+
+    db.query(sqlquery, [term, term], (err, result) => {
+        if (err) {
+            res.redirect('./');
+        }
+
+    // Pass results to the EJS page and view it
+    let newData = Object.assign({}, forumData, {posts:result});
+
+    res.render('results.ejs', newData);
+        });
+    });      
+
+
+  
+
+    // app.get('/search-result', function (req, res) {
+    //     //searching in the database
+    //     //res.send("You searched for: " + req.query.keyword);
+
+    //     let sqlquery = "SELECT * FROM books WHERE name LIKE '%" + req.query.keyword + "%'"; // query database to get all the books
+    //     // execute sql query
+    //     db.query(sqlquery, (err, result) => {
+    //         if (err) {
+    //             res.redirect('./'); 
+    //         }
+    //         let newData = Object.assign({}, webData, {availableBooks:result});
+    //         console.log(newData)
+    //         res.render("list.ejs", newData)
+    //      });        
+    // });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 

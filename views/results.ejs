@@ -6,10 +6,16 @@
   </head>
   <body>
     <h1>About <%=webName%></h1>
-    <p>Welcome to the Film Network - The Film Network is a web application that brings together film fans. 
-        In order to access all the content of the web app, you must register an account. 
+    <p>Results
+      form action="/search-result" method="GET">
+      <p>Search for a User</p>
+      <input id="search-box" type="text" name="keyword" value="Default">
+      <input type="submit" value="Search" >
+    </form>
     </p>
 
+
+    
     <p><a href='/'>Home</a></p>
     <p><a href="about">About <%=webName%></a></p>
     <p><a href="search">Enter to Search</a></p>
@@ -30,6 +36,10 @@
         <p><a href="/login">Login</a></p>
     <% } %>
     
+
+
+
+
 
 
   </body>
